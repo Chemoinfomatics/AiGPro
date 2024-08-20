@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 authors = [
-    { name = "Rahul Brahma", email = "mrbrahma.rahul@gmail.com" }
+    { name = "Rahul Brahma", email = "rahul@drugonix.com" }
 ]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
