@@ -1,0 +1,116 @@
+#############################
+
+fit:
+  model:
+    class_path: gpcrscan.models.model_module.PDBModelModuleGPCR
+    init_args:
+      batch_size: 512
+      l1_strength: 0.000
+      l2_strength: 0.0000
+      model: 
+        # class_path: gpcrscan.models.model.BestGPCR
+        # class_path: gpcrscan.models.model.BestGPCRv231 #BestMultiTaskGpcr
+        # class_path: gpcrscan.models.mamba_models.MambaModel2
+        # class_path: gpcrscan.models.mamba_models.BestGPCR
+        class_path: gpcrscan.models.mamba_models.BestGPCR
+        init_args:
+          test: "--Lets Start--"
+      optimizer_name: AdamW  #Adam #RMSprop #Adadelta #AdamW #Adagrad
+      learning_rate: 0.0001
+      weight_decay: 0.0001
+      scheduler_name: ReduceLROnPlateau #CosineAnnealingLR 
+      scheduler_monitor: val_loss
+
+  data:
+    class_path: gpcrscan.core.folddataloader.PDBFoldDataModule
+    init_args:
+      # batch_size: 1024
+      num_workers: 16
+      protein_tokenizer_filename: "./configs/GPCR_prot_tokenizer.json"
+      ligand_tokenizer_filename: "./configs/Chembl_v33_tokenizer.json"
+
+
+      canonical_smiles_col_name: canonical_smiles
+      msa_col_name : protein_seq # protein_seq #exclude_terminal #protein_seq # exclude_terminal #"protein_seq" #"exclude_terminal" # #"Align_Sequence"  
+      y_col_name : plog_endpoint #endpoint # #endpoint #plog_endpoint #"endpoint"   # "pEndPoint"  #plog_endpoint
+      ##DM##
+      # dm_filename: "../data/AzothBio/processed/dm.h5"
+      # dm_filename: "./data/AzothBio/processed/dm.h5"
+    # v4
+
+      data: /scratch/lab09/GPCRScan/data/train_90_seq_feat_unique.parquet
+      val: /scratch/lab09/GPCRScan/data/val_10_seq_feat.parquet
+      test: /scratch/lab09/GPCRScan/data/combined_seq_feat.parquet
+      test2_files: "/scratch/lab09/GPCRScan/data/agonist_seq_feat.parquet, /scratch/lab09/GPCRScan/data/antagonist_seq_feat.parquet, /scratch/lab09/GPCRScan/data/alz_data_seq_feat.parquet"
+
+      cv: true
+      split_size: .99
+      dataset_name: GPCR_combined   #ShortGPCR
+
+  trainer:
+    max_epochs: 1000
+    # limit_train_batches: .01
+    # limit_val_batches: .05
+    # deterministic: true
+    precision: 16-mixed
+    accelerator: gpu
+    fast_dev_run: false
+    default_root_dir: "/scratch/lab09/GPCRScan/dumps/checkpoints"
+    # enable_model_summary: true
+    check_val_every_n_epoch: 10
+    log_every_n_steps: 1000
+    # enable_checkpointing: true
+    # enable_model_summary: true
+    # accumulate_grad_batches: 1
+    num_sanity_val_steps: 0
+
+    callbacks:
+      # - class_path: lightning.pytorch.callbacks.EarlyStopping
+      #   init_args:
+      #     monitor: val_loss
+      #     patience: 50
+      #     mode: min
+      - class_path: lightning.pytorch.callbacks.ModelCheckpoint
+        init_args:
+          monitor: loss_epoch
+          mode: min
+          save_top_k: 1
+          save_last: true
+          filename: "{epoch}-{loss_epoch:.2f}"
+          dirpath: "/scratch/lab09/GPCRScan/dumps/checkpoints"
+
+      - class_path: lightning.pytorch.callbacks.LearningRateMonitor
+        init_args:
+          logging_interval: "epoch"
+
+
+      - class_path: lightning.pytorch.callbacks.ModelSummary
+        init_args:
+          max_depth: 2
+
+
+
+    logger:
+      - class_path: lightning.pytorch.loggers.WandbLogger
+        init_args:
+          # name: "GPCRScan-disolay"
+          project: "GPCRScan"
+          save_dir: "/scratch/lab09/GPCRScan/dumps/wandb"
+          log_model: all
+          tags: ["RMSprop"]
+          notes: "GPCRScan Azoth Data EC50 "
+          sync_tensorboard: true
+
+
+      - class_path: lightning.pytorch.loggers.TensorBoardLogger
+        init_args:
+          save_dir: "/scratch/lab09/GPCRScan/dumps/tensorboards"
+          name: "logs"
+          # version: "0.0.1"
+          # default_hp_metric: False
+
+      
+  # ckpt_path: "./tensorboards/logs/version_30/checkpoints/epoch=429-step=506540.ckpt"
+  seed_everything: 143
+
+  # ckpt_path : /scratch/lab09/GPCRScan/data/ckpt/model80_carry_epoch=499-val_loss=0.59.ckpt

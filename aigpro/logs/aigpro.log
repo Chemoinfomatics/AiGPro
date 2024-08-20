@@ -1,0 +1,29 @@
+2024-08-20 04:23:41,057:ERROR:API Key: 'imsecreat' not in the list of allowed API keys ['imsecrent', 'imsupersecret'].
+2024-08-20 04:23:52,860:ERROR:API Key: 'imsecreat' not in the list of allowed API keys ['imsecrent', 'imsupersecret'].
+2024-08-20 04:24:21,514:ERROR:API Key: 'imsecreat' not in the list of allowed API keys ['imsecrent', 'imsupersecret'].
+2024-08-20 04:25:06,969:ERROR:API Key: 'imsecreat' not in the list of allowed API keys ['imsecrent', 'imsupersecret'].
+2024-08-20 04:25:24,000:INFO:API Key: 'imsecreat' is valid.
+2024-08-20 04:25:24,006:ERROR:Error in parsing the request: 1 validation error for SmilesInput
+smile
+  Field required [type=missing, input_value={'smiles': ['C12NC(CC)=NC...c2cccc3c4ccccc4nc1c23']}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.6/v/missing
+2024-08-20 04:26:56,493:INFO:API Key: 'imsecreat' is valid.
+2024-08-20 04:26:56,495:ERROR:Error in parsing the request: 1 validation error for SmilesInput
+smile
+  Field required [type=missing, input_value={'smiles': ['C12NC(CC)=NC...e, 'aig_version': 'PRO'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.6/v/missing
+2024-08-20 04:27:23,466:INFO:API Key: 'imsecreat' is valid.
+2024-08-20 04:27:23,469:ERROR:Error in parsing the request: 1 validation error for SmilesInput
+smile
+  Field required [type=missing, input_value={'smiles': ['C12NC(CC)=NC...e, 'aig_version': 'PRO'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.6/v/missing
+2024-08-20 04:27:46,704:INFO:API Key: 'imsecreat' is valid.
+2024-08-20 04:27:46,708:ERROR:Error in parsing the request: 1 validation error for SmilesInput
+smile
+  Field required [type=missing, input_value={'smiles': ['C12NC(CC)=NC...e, 'aig_version': 'PRO'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.6/v/missing
+2024-08-20 04:28:43,097:INFO:API Key: 'imsecreat' is valid.
+2024-08-20 04:28:43,103:INFO:Received 5 SMILES for prediction.
+2024-08-20 04:28:43,107:INFO:Glob Scan: True
+2024-08-20 04:28:44,735:ERROR:Error in handle_aigpro_optimizations: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx
+2024-08-20 04:28:44,737:ERROR:Error: Found no NVIDIA driver on your system. Please check that you have an NVIDIA GPU and installed a driver from http://www.nvidia.com/Download/index.aspx

@@ -1,0 +1,23 @@
+services: 
+  aigpro_api:
+    image: aigpro_api/aigpro_api:latest-prod
+    working_dir: /home/aigpro_api
+    entrypoint: uvicorn aigpro.app:app --reload --host 0.0.0.0 --port 8097
+    volumes:
+      - .:/home/aigpro_api
+    build: 
+      # target: development
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - 8097:8097
+    container_name: aigpro_api
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: always
+    ipc: host

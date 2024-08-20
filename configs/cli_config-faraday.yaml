@@ -1,0 +1,113 @@
+fit:
+  model:
+    class_path: gpcrscan.models.model_module.PDBModelModule
+    init_args:
+      batch_size: 2
+      l1_strength: 0.00
+      l2_strength: 0.003
+      model: 
+        class_path: gpcrscan.models.model.TransKinase_new
+        init_args:
+          test: "--Lets Start--"
+      optimizer_name: Adam
+      learning_rate: 0.0001
+      weight_decay: 0.0001
+      scheduler_name: ReduceLROnPlateau
+      scheduler_monitor: loss
+
+  data:
+    class_path: gpcrscan.core.folddataloader.PDBFoldDataModule
+    init_args:
+      batch_size: 2
+      num_workers: 6
+      protein_tokenizer_filename: "./configs/GPCR_prot_tokenizer.json"
+      ligand_tokenizer_filename: "./configs/Chembl_v33_tokenizer.json"
+      # test: ./data/AzothBio/processed/IC/fold/test/ic_test_5fold4.parquet
+      # data: ./data/AzothBio/processed/IC/fold/train/ic_train_5fold4.parquet
+
+      ## IC
+      # test: ./data/AzothBio/processed/IC/fold/test/ic_test.parquet
+      # data: ./data/AzothBio/processed/IC/fold/train/ic_train.parquet
+
+      ### EC
+      test: ./data/AzothBio/processed/EC/fold/test/ec_test.parquet
+      data: ./data/AzothBio/processed/EC/fold/train/ec_train.parquet
+
+
+      msa_col_name : "protein_seq" #"exclude_terminal" # #"Align_Sequence"  
+      y_col_name : "endpoint"   # "pEndPoint" 
+      ##DM##
+      # dm_filename: "../data/AzothBio/processed/dm.h5"
+      dm_filename: "./data/AzothBio/processed/dm.h5"
+
+      cv: true
+      dataset_name: GPCR 
+
+  trainer:
+    max_epochs: 2
+    limit_train_batches: .01
+    limit_val_batches: .05
+    # deterministic: True
+    precision: 16-mixed
+    accelerator: gpu
+    fast_dev_run: false
+    default_root_dir: "/scratch/lab09/GPCRScan/dumps/checkpoints"
+    enable_model_summary: true
+    check_val_every_n_epoch: 10
+    num_sanity_val_steps: null
+    log_every_n_steps: 100
+    enable_checkpointing: true
+    enable_model_summary: true
+    # accumulate_grad_batches: 1
+    num_sanity_val_steps: 0
+
+    callbacks:
+      class_path: lightning.pytorch.callbacks.EarlyStopping
+      init_args:
+          patience: 5
+          monitor: val_loss
+          mode: min
+      class_path: lightning.pytorch.callbacks.ModelCheckpoint
+      init_args:
+          monitor: val_loss
+          mode: min
+          save_top_k: 1
+          save_last: true
+          filename: "{epoch}-{val_loss:.2f}"
+          dirpath: "/scratch/lab09/GPCRScan/dumps/checkpoints"
+
+      class_path: lightning.pytorch.callbacks.LearningRateMonitor
+      init_args:
+        logging_interval: "epoch"
+
+
+      class_path: lightning.pytorch.callbacks.ModelSummary
+      init_args:
+        max_depth: -1
+
+
+
+    logger:
+      class_path: lightning.pytorch.loggers.WandbLogger
+      init_args:
+        # name: "GPCRScan-disolay"
+        project: "GPCRScan"
+        save_dir: "/scratch/lab09/GPCRScan/dumps/wandb"
+        log_model: all
+        log_code: true
+        log_config: true
+        tags: ["Fold4", "5fold"]
+        notes: "GPCRScan Azoth Data EC50 "
+        sync_tensorboard: true
+
+
+      class_path: lightning.pytorch.loggers.TensorBoardLogger
+      init_args:
+        save_dir: "/scratch/lab09/GPCRScan/dumps/tensorboards"
+        name: "logs"
+        # version: "0.0.1"
+        # default_hp_metric: False
+
+      
+  # ckpt_path: "./tensorboards/logs/version_30/checkpoints/epoch=429-step=506540.ckpt"
+  seed_everything: 43

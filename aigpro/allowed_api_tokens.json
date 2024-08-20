@@ -1,0 +1,16 @@
+[
+    {
+        "first_name": "Demo",
+        "last_name": "Doe",
+        "email": "joe@drugonix.com",
+        "affiliation": "Drugonix",
+        "api_token": "imsecreat"
+    },
+    {
+        "first_name": "App",
+        "last_name": "Doe",
+        "email": "jane@drugonix.com",
+        "affiliation": "Drugonix",
+        "api_token": "imsupersecret"
+    }
+]
